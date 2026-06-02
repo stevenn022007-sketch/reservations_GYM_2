@@ -6,7 +6,6 @@ from rich.console import Console
 # En este código, se utiliza para imprimir mensajes estilizados y para manejar la entrada del usuario de manera más atractiva.
 console = Console()
 # -------VER MIEMBROS-----------------
-
  #-----------STEFYY- CREAR MIEMBRO----------------
 
 #escribimos el mismo diccionario que esta en main para trabajar sobre los mismos datos
