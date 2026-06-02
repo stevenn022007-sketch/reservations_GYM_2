@@ -1,0 +1,2 @@
+#librerias
+rich = 26.0.1
