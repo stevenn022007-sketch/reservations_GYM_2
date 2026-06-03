@@ -1,11 +1,38 @@
 # --------------CRUD--------MIEMBROS-----------------
 from rich.console import Console
+from rich.table import Table
 # Qué necesita un miembro? -> id, nombre, tipo de suscripción
 # console = Console()  # Inicializamos la consola de Rich para usarla en este módulo
 #rich es una biblioteca de Python que permite crear interfaces de usuario en la terminal con estilos y colores. 
 # En este código, se utiliza para imprimir mensajes estilizados y para manejar la entrada del usuario de manera más atractiva.
 console = Console()
 # -------VER MIEMBROS-----------------
+# que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
+gimnasio = {}
+def ver_miembros(gimnasio):
+    console.print("\n[bold cyan]👀 LISTA DE MIEMBROS[/bold cyan]")
+
+    # Verificar si el diccionario está vacío
+    if len(gimnasio) == 0:
+        console.print("[red]⚠ No hay miembros registrados.[/red]\n")
+        return
+
+    # Crear la tabla con rich
+    tabla = Table(title="Miembros del Gimnasio", border_style="cyan")
+
+    # Definir las columnas de la tabla
+    tabla.add_column("ID", style="yellow", justify="center")
+    tabla.add_column("Nombre", style="white")
+    tabla.add_column("Suscripción", style="green", justify="center")
+
+    # Recorrer el diccionario y agregar cada miembro como fila
+    for id_miembro, datos in gimnasio.items():
+        tabla.add_row(
+            id_miembro,
+            datos["nombre"],
+            datos["tipo_suscripcion"]
+        )
+
  #-----------STEFYY- CREAR MIEMBRO----------------
 
 #escribimos el mismo diccionario que esta en main para trabajar sobre los mismos datos
@@ -60,7 +87,7 @@ def eliminar_miembro(lista_miembros):
 # -------------------EDITAR MIEMBRO----------------------
 
 def actualizar_miembro (gimnasio: dict):
-    id_miembro = int(console.input("[green] id del miembro a editar: [/green]"))
+    id_miembro = int(console.input("[green] id del miembro a editar: [/green]")).strip()
     
     # nombre_clase = input("Nombre de la clase: ").strip()
 
@@ -68,13 +95,13 @@ def actualizar_miembro (gimnasio: dict):
 
     if str_id_miembro in gimnasio:
         info = gimnasio[str_id_miembro]
-        print(f"¡Mienbro encontrado!. proporciona los datos a editar del miembro: {str_id_miembro}")
-        print("\nPresiona 'ENTER' sin escribir nada para mantener el valo actual\n")
+        print(f"¡Miembro encontrado!. proporciona los datos a editar del miembro: {str_id_miembro}")
+        print("\nPresiona 'ENTER' sin escribir nada para mantener el valor actual\n")
 
         console.print(f"[green]El Nombre actual es:[/green] {info["nombre"]}")
         nuevo_nombre = console.input("[green]Elije el nuevo nombre, de lo contrario Presiona ENTER:[/green]")
 
-        if nuevo_nombre != "":
+        if nuevo_nombre != "":  #si el nuevo nombre no es el mismo no se actualiza, si es diferente se actualiza
             info["nombre"] = nuevo_nombre
 
         console.print(f"[green]Tipo de suscripción Actual:[/green] {info["tipo_suscripcion"]}")
@@ -93,6 +120,6 @@ def actualizar_miembro (gimnasio: dict):
                 return
         info["tipo_suscripcion"] = tipo
     else:
-        print(f"❌❌❌El mienbro con ese id {str_id_miembro} no exsiste❌❌❌")
+        print(f"❌❌❌El miembro con ese id {str_id_miembro} no existe❌❌❌")
 
 
