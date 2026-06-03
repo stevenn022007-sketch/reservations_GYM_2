@@ -1,15 +1,17 @@
 # --------------CRUD--------MIEMBROS-----------------
 from rich.console import Console
 from rich.table import Table
+from modules.data import cargar_datos, guardar_datos 
 # Qué necesita un miembro? -> id, nombre, tipo de suscripción
 # console = Console()  # Inicializamos la consola de Rich para usarla en este módulo
 #rich es una biblioteca de Python que permite crear interfaces de usuario en la terminal con estilos y colores. 
 # En este código, se utiliza para imprimir mensajes estilizados y para manejar la entrada del usuario de manera más atractiva.
 console = Console()
+Ruta_Json = "data/miembros.json"
 # -------VER MIEMBROS-----------------
 # que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
-gimnasio = {}
 def ver_miembros(gimnasio):
+    miembros = cargar_datos(Ruta_Json)
     console.print("\n[bold cyan]👀 LISTA DE MIEMBROS[/bold cyan]")
 
     # Verificar si el diccionario está vacío
@@ -32,11 +34,13 @@ def ver_miembros(gimnasio):
             datos["nombre"],
             datos["tipo_suscripcion"]
         )
+        guardar_datos(Ruta_Json, miembros)
 
  #-----------STEFYY- CREAR MIEMBRO----------------
 
 #escribimos el mismo diccionario que esta en main para trabajar sobre los mismos datos
 def crear_miembro(gimnasio):
+    miembros = cargar_datos(Ruta_Json)
     console.print("\n[bold cyan]➕ CREAR NUEVO MIEMBRO[/bold cyan]")
 
     nombre = console.input("[green]Nombre del miembro: [/green]").strip()
@@ -58,14 +62,14 @@ def crear_miembro(gimnasio):
 
         # Generar el ID automático contando cuántos miembros hay.
 
-        nuevo_id = f"miembro_{len(gimnasio) + 1}"
+        nuevo_id = f"miembro_{len(miembros) + 1}"
 
         # Guardar el nuevo miembro en el diccionario
-        gimnasio[nuevo_id] = {
+        miembros[nuevo_id] = {
             "nombre": nombre,
             "tipo_suscripcion": tipo
         }
-
+        guardar_datos(Ruta_Json, miembros) 
         console.print(f"[bold ]✅ Miembro '{nombre}' creado con ID {nuevo_id}[/bold]\n")
 
     except ValueError:
@@ -119,7 +123,8 @@ def actualizar_miembro (gimnasio: dict):
                 console.print("[red]⚠ Opción inválida.[/red]")
                 return
         info["tipo_suscripcion"] = tipo
+
+        # ------------Vinculo con json-------
+        guardar_datos(Ruta_Json, gimnasio)
     else:
         print(f"❌❌❌El miembro con ese id {str_id_miembro} no existe❌❌❌")
-
-
