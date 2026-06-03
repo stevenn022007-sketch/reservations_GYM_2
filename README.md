@@ -66,3 +66,5 @@ Add -> Si se agrego una funcionalidad nueva EJM: Add: se agrego funcionalidad el
 library -> Si agregaron alguna libreria y donde la utilizaron ESPECIFICAR EN QUE LINEA DE CODIGO ESTAN utilizando la libreria EJM: library: se agrego la liberia match en la linea 32.
 
 modified -> Para cambios pequeños de estrutura de codigo
+
+fox -> cambios grandes como varias funciones y especificar que funciones

@@ -1,2 +1,5 @@
 # Entorno virtual
 GYM_venv/
+
+#ignorar los datos JSON
+data/
