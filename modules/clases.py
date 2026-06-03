@@ -47,18 +47,36 @@ def eliminar_clases(lista_clases):
         
         
 def actulizar_clase (lista_clases: dict):
-    id_miembro = int(input("ID del miembro a editar:"))
+    id_miembro = input("Ingrese el ID de la clase para actualizar: ")
     
     # nombre_clase = input("Nombre de la clase: ").strip()
+    if id_miembro in lista_clases:
+        while True:
+            nuevo_nombre_clase = input("ingrese el nombre de la nueva clase: ")
+            nuevo_instructor = input("Ingrese un nuevo instructor, si no escriba el nombre del anterior instructor: ")
+            nuevo_horario = input("Ingrese el nuevo horario de la clase 'mañana, tarde, noche': ")
+            
+            if nuevo_nombre_clase != "" and nuevo_instructor != "" and nuevo_horario != "":
+                break
+            print("Intenta de nuevo, ninguno de los campos puede quedar vacio...")
+        
+        while True:
+            try:
+                nuevos_cupos =int(input("Ingrese el nuevo cupo maximo de la clase: "))
+                break
+            except ValueError:
+                print("Ingrese un numero y entero")
 
-    str_id_miembro = f"clase_{id_miembro}"
+        #modificar datos
+        lista_clases[id_miembro]["nombre_clase:"] = nuevo_nombre_clase
+        lista_clases[id_miembro]["instructor:"] = nuevo_instructor
+        lista_clases[id_miembro]["horario:"] = nuevo_horario
+        lista_clases[id_miembro]["cupo_maximo:"] = nuevos_cupos
+        
+        print(lista_clases)
 
-    if str_id_miembro in lista_clases:
-        info = lista_clases[str_id_miembro]
-       
-        print(f"Infomacion: {info}" )
     else:
-        print(f"❌❌❌La clase con ese id {str_id_miembro} no exsiste❌❌❌")
+        print(f"❌❌❌La clase con ese id {id_miembro} no existe❌❌❌")
 
     
 actulizar_clase(clases)
