@@ -1,5 +1,5 @@
 # Entorno virtual
 GYM_venv/
 
-#ignorar los datos JSON
-data/
+#ignorar archivos cache
+__pycache__

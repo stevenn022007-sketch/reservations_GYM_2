@@ -1,2 +1,2 @@
 #librerias
-rich = 26.0.1
+rich: 15.0.0
