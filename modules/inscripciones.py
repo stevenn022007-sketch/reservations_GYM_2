@@ -4,9 +4,9 @@ from modules.data import cargar_datos, guardar_datos
 console = Console()
 
 Ruta_Json = "data/inscripciones.json"
-
+#-------------------Vincular miembro-------------------
 def vincular_miembros(gimnasio_dict, clases_dict, str_id_miembro, str_id_clase):
-    inscripciones = cargar_datos
+    inscripciones = cargar_datos(Ruta_Json)
 
     inscrito = any(
         datos["id_miembro"] == str_id_miembro and datos["id_clase"] == str_id_clase
@@ -14,7 +14,7 @@ def vincular_miembros(gimnasio_dict, clases_dict, str_id_miembro, str_id_clase):
     )
 
     if inscrito:
-        console.print(f"[yellow]El miembro ya esta inscrito en esta clase.[/yellow]")
+        console.print("[yellow]El miembro ya esta inscrito en esta clase.[/yellow]")
         return False
     
     nuevo_id = f"inscripcion_{len(inscripciones) + 1}"
@@ -29,10 +29,30 @@ def vincular_miembros(gimnasio_dict, clases_dict, str_id_miembro, str_id_clase):
     
     console.print(f"[bold green]✅ {nombre_m} ha sido vinculado a la clase de {nombre_c}.[/bold green]")
     return True
+#------------------Desvincular miembros------------------
+def desvincular_miembro_de_clase(str_id_miembro, str_id_clase):
+    inscripciones = cargar_datos(Ruta_Json)
+    """
+    Elimina la unión entre el miembro y la clase.
+    """
+    id_a_eliminar = None
+    for k, v in inscripciones.items():
+        if v["id_miembro"] == str_id_miembro and v["id_clase"] == str_id_clase:
+            id_a_eliminar = k
+            break
 
+    if id_a_eliminar:
+        inscripciones.pop(id_a_eliminar)
+        guardar_datos(Ruta_Json, inscripciones)
+        return True
+    
+    console.print("[yellow]❌ No se encontró la inscripción especificada.[/yellow]")
+    return False
+
+#------------------Visualizacion------------------
 def mostrar_miembros_clase(gimnasio_dict, id_clase_num):
     inscripciones = cargar_datos(Ruta_Json)
-    str_id_clase = f"clase_{id_clase_num}"
+    str_id_clase = f"{id_clase_num}"
     console.print(f"\n[bold cyan] Miembros inscritos en {str_id_clase.upper()}:[/bold cyan]")
 
     encontrados = False

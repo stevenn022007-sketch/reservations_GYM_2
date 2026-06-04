@@ -1,4 +1,4 @@
-from data import cargar_datos, guardar_datos
+from modules.data import cargar_datos, guardar_datos
 
 ruta = "data/clases.json"
 HORARIOS_VALIDOS = ["mañana","tarde","noche"]
@@ -114,7 +114,7 @@ def actualizar_clase():
         print(f"❌❌❌La clase con ese id {id_miembro} no existe❌❌❌")
        
        
-actualizar_clase() 
+
 
         
         
