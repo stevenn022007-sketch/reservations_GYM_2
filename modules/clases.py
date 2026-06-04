@@ -219,7 +219,7 @@ def menu_principal():
         
         # Cabecera llamativa
         console.print(Panel(
-            "[bold blink magenta]💪 FITNESS APP MANAGEMENT SYSTEM 💪[/bold blink magenta]\n[bold cyan]Control y gestión de horarios y clases[/bold cyan]", 
+            "[bold blink magenta]💪 FITNESS APP MANAGEMENT SYSTEM 💪[/bold blink magenta]\n[bold cyan]Control gestión de horarios y clases[/bold cyan]", 
             border_style="bold green", 
             box=ROUNDED,
             expand=False
