@@ -1,0 +1,14 @@
+{
+    "miembro_1": {
+        "nombre": "Ronalt",
+        "tipo_suscripcion": "Mensual"
+    },
+    "miembro_2": {
+        "nombre": "Stephanie",
+        "tipo_suscripcion": "Anual"
+    },
+    "miembro_3": {
+        "nombre": "pepe",
+        "tipo_suscripcion": "Anual"
+    }
+}
