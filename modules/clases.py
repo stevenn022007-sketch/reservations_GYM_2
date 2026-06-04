@@ -1,87 +1,126 @@
-clases = {
-    "clase_1": {"nombre_clase:": "yoga", "instructor:": "Eliana", "horario:": "mañana", "cupo_maximo:": 20},
-    "clase_2": {"nombre_clase:": "zumba", "instructor:": "Gabriel", "horario:": "noche", "cupo_maximo:": 25},
-    "clase_3": {"nombre_clase:": "crossfit", "instructor:": "Lina", "horario:": "tarde", "cupo_maximo:": 15},
-    "clase_4": {"nombre_clase:": "calistenia", "instructor:": "Leonardo", "horario:": "Jueves 8:00 AM a 10:00 AM", "cupo_maximo": 18},
-}
+from data import cargar_datos, guardar_datos
 
-def inspeccionar_clases(lista_clases):
-    for clase, datos in lista_clases.items():
-        print("-------------------------------")
-        print(f"El ID de la clase es:  {clase} ")
+ruta = "data/clases.json"
+HORARIOS_VALIDOS = ["mañana","tarde","noche"]
+
+def inspeccionar_clases():
+    Datos_actuales = cargar_datos(ruta)
+    for clase, datos in Datos_actuales.items():
+        print("-----------------------------")
+        print(f"ID de la clase: {clase}")
         for clave, valor in datos.items():
-            print(clave,valor)
+            print(f"{clave}, : {valor}")
+            
+            
+def crear_clase():
+    entrada_de_datos = cargar_datos(ruta)
     
-def crear_clases(lista_clases):
-    nombre_clase = input("Ingrese el nombre de la clase: ")
-    instructor_clase = input("Ingrese el nombre del instructor: ")
-    horario_clase = input("ingrese el horario de la clase 'Mañana, tarde o noche': ")
-
-    try: 
-        cupo_maximo = int(input("Ingrese el cupo de la clase: "))
-    except ValueError:
-        print("El dato tiene que ser numerico y entero")
-           
-    if cupo_maximo <= 0:
-        print("El cupo no puede ser un numero negativo o 0")
-        return
+    inspeccionar_clases()
     
-    nuevo_id = f"clase_{len(lista_clases) + 1}"
-     
-    lista_clases[nuevo_id] = {
-        "nombre_clase": nombre_clase,
-        "instructor" : instructor_clase,
-        "horario": horario_clase,
-        "Cupo_maximo": cupo_maximo 
+    while True:
+            nombre_clase = input("ingrese el nombre de la nueva clase: ")
+            instructor = input("Ingrese un nuevo instructor, si no escriba el nombre del anterior instructor: ")
+            
+            if nombre_clase != "" and instructor != "":
+                break
+            print("Intenta de nuevo, ninguno de los campos puede quedar vacio...")
+            
+    # Validación del horario con opciones permitidas
+    while True:
+        horario_clase = input("Ingrese el horario de la clase (Mañana, Tarde o Noche): ").strip().lower()
+        if horario_clase not in HORARIOS_VALIDOS:
+            print(f"Horario inválido. Las opciones válidas son: {', '.join(HORARIOS_VALIDOS)}.")
+            
+        if horario_clase in HORARIOS_VALIDOS:
+            break
+    while True:
+        try:
+            cupo_maximo = int(input("Ingrese el cupo máximo de la clase: "))
+            if cupo_maximo <= 0:
+                print("El cupo debe ser un número entero mayor que 0.")     
+        except ValueError:
+            print("El cupo debe ser un valor numérico entero.")
+        else:
+            break
+    #Creamos un Nuevo id automatico 
+    nuevo_id = f"{len(entrada_de_datos) + 1}"
+    
+    # Crear el diccionario de la nueva clase usando nuevo_id como clave
+    
+    datos_clase = {
+            "nombre_clase": nombre_clase,
+            "instructor": instructor,
+            "horario": horario_clase,
+            "cupo_maximo": cupo_maximo
     }
     
-    print(f"la clase {nombre_clase} se agrego exitosamente con el ID {nuevo_id}")
+    # se añade un subdiccionario nuevo con el ID automatioc y igual al dato clase que ingrese el usuario.
+    entrada_de_datos[nuevo_id] = datos_clase
+    guardar_datos(ruta, entrada_de_datos )
 
 
-def eliminar_clases(lista_clases):
+def eliminar_clases():
+    entrada_de_datos = cargar_datos(ruta)
+    inspeccionar_clases()
+    
     eliminar_clase_por_id = input("Ingrese la clase que desea eliminar por ID: ").lower()
     
-    if eliminar_clase_por_id in lista_clases:
-        lista_clases.pop(eliminar_clase_por_id)
+    if eliminar_clase_por_id in entrada_de_datos:
+        entrada_de_datos.pop(eliminar_clase_por_id)
         print(f"El ID {eliminar_clase_por_id} fue eliminado exitosamente")
-        
-        
-def actulizar_clase (lista_clases: dict):
+        #guardar datos:
+        guardar_datos(ruta, entrada_de_datos)
+    
+    
+def actualizar_clase():
+    entrada_datos = cargar_datos(ruta)
+    
     id_miembro = input("Ingrese el ID de la clase para actualizar: ")
     
-    # nombre_clase = input("Nombre de la clase: ").strip()
-    if id_miembro in lista_clases:
+    if id_miembro in entrada_datos:
         while True:
             nuevo_nombre_clase = input("ingrese el nombre de la nueva clase: ")
             nuevo_instructor = input("Ingrese un nuevo instructor, si no escriba el nombre del anterior instructor: ")
-            nuevo_horario = input("Ingrese el nuevo horario de la clase 'mañana, tarde, noche': ")
-            
-            if nuevo_nombre_clase != "" and nuevo_instructor != "" and nuevo_horario != "":
+            if nuevo_nombre_clase != "" and nuevo_instructor != "":
                 break
             print("Intenta de nuevo, ninguno de los campos puede quedar vacio...")
-        
+    
+        while True:
+            nuevo_horario_clase = input("Ingrese el horario de la nueva clase (Mañana, Tarde o Noche): ").strip().lower()
+            if nuevo_horario_clase not in HORARIOS_VALIDOS:
+                print(f"Horario inválido. Las opciones válidas son: {', '.join(HORARIOS_VALIDOS)}.")
+                
+            if nuevo_horario_clase in HORARIOS_VALIDOS:
+                break
+    
         while True:
             try:
-                nuevos_cupos =int(input("Ingrese el nuevo cupo maximo de la clase: "))
-                break
+                nuevo_cupo_maximo = int(input("Ingrese el cupo máximo de la nueva clase: "))
+                if nuevo_cupo_maximo <= 0:
+                    print("El cupo debe ser un número entero mayor que 0.")     
             except ValueError:
-                print("Ingrese un numero y entero")
-
+                print("El cupo debe ser un valor numérico entero.")
+            else:
+                break
+            
         #modificar datos
-        lista_clases[id_miembro]["nombre_clase:"] = nuevo_nombre_clase
-        lista_clases[id_miembro]["instructor:"] = nuevo_instructor
-        lista_clases[id_miembro]["horario:"] = nuevo_horario
-        lista_clases[id_miembro]["cupo_maximo:"] = nuevos_cupos
-        
-        print(lista_clases)
-
+        entrada_datos[id_miembro]["nombre_clase"] = nuevo_nombre_clase
+        entrada_datos[id_miembro]["instructor"] = nuevo_instructor
+        entrada_datos[id_miembro]["horario"] = nuevo_horario_clase
+        entrada_datos[id_miembro]["cupo_maximo"] = nuevo_cupo_maximo
+        guardar_datos(ruta, entrada_datos)
+        inspeccionar_clases()
     else:
         print(f"❌❌❌La clase con ese id {id_miembro} no existe❌❌❌")
+       
+       
+actualizar_clase() 
 
-    
-actulizar_clase(clases)
-    
-    
+        
+        
+            
+            
+        
+            
 
-     
     
