@@ -10,13 +10,14 @@ console = Console()
 Ruta_Json = "data/miembros.json"
 # -------VER MIEMBROS-----------------
 # que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
-def ver_miembros(gimnasio):
+def ver_miembros(gimnasio=None):
+    # Cargamos los datos reales del JSON directamente
     gimnasio = cargar_datos(Ruta_Json)
     console.print("\n[bold cyan]👀 LISTA DE MIEMBROS[/bold cyan]")
 
     # Verificar si el diccionario está vacío
-    if len(gimnasio) == 0:
-        console.print("[red]⚠ No hay miembros registrados.[/red]\n")
+    if not gimnasio:
+        console.print("[red]⚠ No hay miembros registrados.[/red]\\n")
         return
 
     # Crear la tabla con rich
