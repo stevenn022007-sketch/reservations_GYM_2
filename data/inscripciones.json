@@ -1,14 +1,10 @@
 {
-  "inscripcion_1": {
-    "id_miembro": "miembro_1",
-    "id_clase": "clase_1"
-  },
-  "inscripcion_2": {
-    "id_miembro": "miembro_2",
-    "id_clase": "clase_3"
-  },
-  "inscripcion_3": {
-    "id_miembro": "miembro_1",
-    "id_clase": "clase_4"
-  }
+    "inscripcion_2": {
+        "id_miembro": "miembro_2",
+        "id_clase": "clase_3"
+    },
+    "inscripcion_3": {
+        "id_miembro": "miembro_1",
+        "id_clase": "4"
+    }
 }

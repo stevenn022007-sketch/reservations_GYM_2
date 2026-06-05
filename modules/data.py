@@ -1,6 +1,8 @@
 import json
+from rich.console import Console
 import os
 # "OS" significa operation system sirve para interactuar con los archivos del compu 
+console = Console()
 
 def cargar_datos(ruta_archivo):
     
@@ -11,14 +13,12 @@ def cargar_datos(ruta_archivo):
                 # "encoding" = codificacion y "utf-8" = Es una tabla de traduccion de caracteres, evita que los nombres se rompan 
                 # json.load transforma el texto del JSON de vuelta a un diccionario de Python
                 datos = json.load(archivo)
-                print("📂 ¡Datos cargados exitosamente desde el archivo JSON!")
                 return datos
         except Exception as e: # Evita que el programa se rompa devolviendolo vacio
             print(f"⚠️ Error al leer el archivo JSON: {e}. Se usarán datos vacíos.")
             return {}
     else:
         # Si el archivo no existe, retornamos un diccionario vacío (o tus clases por defecto)
-        print("ℹ️ No se encontró un archivo JSON previo. Iniciando con base de datos limpia.")
         return {}
     
 
@@ -40,5 +40,5 @@ def guardar_datos(ruta_archivo, datos): # Agarra un diccionario de Python y lo p
         return True #Le dice que la operacion fue exitosa 👍🏿
     
     except Exception as e: #Si falla por falta de espacio que muestre error
-        print(f"Error al guardar los datos: {e}") 
+        console.print(f"[bold red]❌ Error al guardar el archivo JSON: {e}[/bold red]")
         return False #Avisa que la operacion fallo, deteniendo todo y cancelandolo

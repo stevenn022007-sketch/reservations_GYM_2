@@ -45,26 +45,32 @@ def menu_inscripciones():
         elif opcion == "3":
             try:
                 # Pide el número de la clase (por ejemplo: 1)
-                id_c = int(console.input("[green]Ingrese el número de la clase a consultar (ej: 1): [/green]"))
+                id_c_num = console.input("[green]Ingrese el número de la clase a consultar (ej: 1): [/green]").strip()
+                if not id_c_num.isdigit():
+                    raise ValueError
+                
                 # Abre la lista de personas registradas en el gimnasio
                 base_m = cargar_datos(Ruta_Miembros)
                 # Llama a la función que los dibuja en la pantalla
-                mostrar_miembros_clase(base_m, id_c)
+                mostrar_miembros_clase(base_m, id_c_num)
             except ValueError:
                 # Si el usuario escribe letras en vez de un número, muestra este aviso para que no se apague el programa
-                console.print("[red]⚠ Entrada inválida.[/red]")
+                console.print("[red]⚠ Entrada inválida. Ingrese solo el número de ID.[/red]")
         # Si escribe 4, intenta mostrar a qué clases asiste una persona específica
         elif opcion == "4":
             try:
-                # Pide el número de la persona (por ejemplo: 3)
-                id_m = int(console.input("[green]Ingrese el número del miembro a consultar (ej: 1): [/green]"))
+                # Pide el número de la persona (por ejemplo: 1)
+                id_m_num = console.input("[green]Ingrese el número del miembro a consultar (ej: 1): [/green]").strip()
+                if not id_m_num.isdigit():
+                    raise ValueError
+                
                 # Abre la lista de clases disponibles
                 base_c = cargar_datos(Ruta_Clases)
                 # Llama a la función que las dibuja en la pantalla
-                mostrar_clases_miembro(base_c, id_m)
+                mostrar_clases_miembro(base_c, id_m_num)
             except ValueError:
                 # Si escribe letras en vez de números, frena el error y avisa
-                console.print("[red]⚠ Entrada inválida.[/red]")
+                console.print("[red]⚠ Entrada inválida. Ingrese solo el número de ID.[/red]")
         # Si escribe 0, rompe el círculo infinito de este submenú y regresa al menú de antes
         elif opcion == "0":
             break 
@@ -78,16 +84,17 @@ def menu_inscripciones():
 def flujo_inscripcion():
     # Muestra un letrero amarillo avisando que inicia la inscripción
     console.print("\n[bold yellow]📝 PROCESO DE INSCRIPCIÓN A CLASE[/bold yellow]")
-    try:
-        # Pide los números enteros del alumno y de la clase
-        id_m_num = int(console.input("[green]Ingrese el número de ID del miembro (ej: 1): [/green]"))
-        id_c_num = int(console.input("[green]Ingrese el número de ID de la clase (ej: 1): [/green]"))
-    except ValueError:
+    
+    # Pide los identificadores evitando que falle si digitan letras, validando con .isdigit()
+    id_m_num = console.input("[green]Ingrese el número de ID del miembro (ej: 1): [/green]").strip()
+    id_c_num = console.input("[green]Ingrese el número de ID de la clase (ej: 1): [/green]").strip()
+    
+    if not id_m_num.isdigit() or not id_c_num.isdigit():
         # Si el usuario digita mal y pone letras, detiene el proceso con este aviso
         console.print("[red]⚠ Error: Los identificadores deben ser numéricos.[/red]")
-        return # Cancela y se sale de este proceso
+        return 
 
-    # Le pega la palabra texto para armar los códigos internos: "miembro_1" y "clase_1"
+    # Formatos por defecto combinados con texto
     str_id_miembro = f"miembro_{id_m_num}"
     str_id_clase = f"clase_{id_c_num}"
 
@@ -95,37 +102,62 @@ def flujo_inscripcion():
     base_miembros = cargar_datos(Ruta_Miembros)
     base_clases = cargar_datos(Ruta_Clases)
 
-    # Revisa si el código del miembro no existe en tus papeles. Si no existe, cancela todo.
-    if str_id_miembro not in base_miembros:
-        console.print(f"[red]❌ El miembro {str_id_miembro} no existe.[/red]")
+    # --- 🛠️ BUSCADOR INTELIGENTE Y MULTI-TIPO PARA MIEMBROS ---
+    llave_miembro_real = None
+    if str_id_miembro in base_miembros:
+        llave_miembro_real = str_id_miembro          # Formato "miembro_1"
+    elif id_m_num in base_miembros:
+        llave_miembro_real = id_m_num                # Formato Texto "1"
+    elif int(id_m_num) in base_miembros:
+        llave_miembro_real = int(id_m_num)           # Formato Entero 1
+
+    # --- 🛠️ BUSCADOR INTELIGENTE Y MULTI-TIPO PARA CLASES ---
+    llave_clase_real = None
+    if str_id_clase in base_clases:
+        llave_clase_real = str_id_clase              # Formato "clase_1"
+    elif id_c_num in base_clases:
+        llave_clase_real = id_c_num                  # Formato Texto "1"
+    elif int(id_c_num) in base_clases:
+        llave_clase_real = int(id_c_num)             # Formato Entero 1
+
+    # Si no se encontró el miembro usando ninguna de las tres formas, cancela
+    if llave_miembro_real is None:
+        console.print(f"[red]❌ El miembro '{id_m_num}' no existe en el sistema.[/red]")
         return
-    # Revisa si la clase no existe en tus papeles. Si no existe, cancela todo.
-    if str_id_clase not in base_clases:
-        console.print(f"[red]❌ La clase {str_id_clase} no existe.[/red]")
+        
+    # Si no se encontró la clase usando ninguna de las tres formas, cancela
+    if llave_clase_real is None:
+        console.print(f"[red]❌ La clase '{id_c_num}' no existe en el sistema.[/red]")
+        # Imprime las llaves actuales en consola para ayudarte a diagnosticar visualmente si es necesario
+        console.print(f"[yellow]💡 Llaves detectadas en tu JSON de clases: {list(base_clases.keys())}[/yellow]")
         return
 
-    # Llama al otro archivo para comprobar si quedan sillas vacías en esa clase y resta una silla
-    if reto_final.validar_y_restar_cupo(base_clases, str_id_clase):
-        # Si había espacio, intenta hacer la unión oficial del alumno con la clase
-        exito_vinculo = vincular_miembros(base_miembros, base_clases, str_id_miembro, str_id_clase)
+    # Llama al otro archivo usando la llave real encontrada (str o int) para comprobar cupos
+    if reto_final.validar_y_restar_cupo(base_clases, llave_clase_real):
+        # Si había espacio, intenta hacer la unión oficial usando las llaves validadas
+        exito_vinculo = vincular_miembros(base_miembros, base_clases, llave_miembro_real, llave_clase_real)
         
-        # Si la unión se logró sin problemas (no estaba repetido)...
+        # Si la unión se logró sin problemas...
         if exito_vinculo:
-            # Guarda en el computador la lista de clases con la silla que acabamos de restar
+            # Guarda en el computador la lista de clases con el cupo restado
             guardar_datos(Ruta_Clases, base_clases)
             console.print("[bold green]💾 Los cupos del gimnasio se han guardado con éxito.[/bold green]")
         else:
-            # Si el miembro ya estaba metido en esa clase, se cancela la unión y le devolvemos la silla que le habíamos quitado
-            reto_final.devolver_cupo_disponible(base_clases, str_id_clase)
+            # Si el miembro ya estaba inscrito, devolvemos la silla usando la llave exacta
+            reto_final.devolver_cupo_disponible(base_clases, llave_clase_real)
+            
+    # Agregamos una pausa para que main.py no limpie la pantalla de golpe
+    console.input("\n[bold white]Presione [Enter] para continuar...[/bold white]")
 
 def flujo_baja():
     # Muestra un letrero rojo avisando que inicia el retiro
     console.print("\n[bold red]🥶 PROCESO DE DESVINCULACIÓN (DAR DE BAJA)[/bold red]")
-    try:
-        # Pide los números del alumno y de la clase que va a abandonar
-        id_m_num = int(console.input("[green]Ingrese el número de ID del miembro (ej: 1): [/green]"))
-        id_c_num = int(console.input("[green]Ingrese el número de ID de la clase (ej: 1): [/green]"))
-    except ValueError:
+    
+    # Pide los números del alumno y de la clase que va a abandonar limpiamente
+    id_m_num = console.input("[green]Ingrese el número de ID del miembro (ej: 1): [/green]").strip()
+    id_c_num = console.input("[green]Ingrese el número de ID de la clase (ej: 1): [/green]").strip()
+    
+    if not id_m_num.isdigit() or not id_c_num.isdigit():
         # Frena el error si meten letras
         console.print("[red]⚠ Error: Los identificadores deben ser numéricos.[/red]")
         return
@@ -158,7 +190,7 @@ def vincular_miembros(gimnasio_dict, clases_dict, str_id_miembro, str_id_clase):
 
     # Si la revisión dice que es verdad (que ya estaba inscrito), muestra advertencia y detiene todo devolviendo "Falso"
     if inscrito:
-        console.print("[yellow]El miembro ya esta inscrito en esta clase.[/yellow]")
+        console.print("[yellow]El miembro ya está inscrito en esta clase.[/yellow]")
         return False
     
     # Crea un código nuevo automático sumándole 1 a la cantidad total de inscripciones (Ej: "inscripcion_5")
@@ -210,43 +242,72 @@ def desvincular_miembro_de_clase(str_id_miembro, str_id_clase):
 def mostrar_miembros_clase(gimnasio_dict, id_clase_num):
     # Trae todas las uniones de inscripciones desde el computador
     inscripciones = cargar_datos(Ruta_Json)
-    # Convierte el número que escribió el usuario en el formato completo (ej: de 1 pasa a "clase_1")
-    str_id_clase = f"clase_{id_clase_num}"
-    console.print(f"\n[bold cyan] Miembros inscritos en {str_id_clase.upper()}:[/bold cyan]")
+    
+    # Preparamos los dos formatos posibles en los que pudo haberse guardado ("1" o "clase_1")
+    id_puro = str(id_clase_num).strip()
+    str_id_clase = f"clase_{id_puro}".lower()
+    
+    console.print(f"\n[bold cyan] Miembros inscritos en CLASE {id_puro}:[/bold cyan]")
 
     encontrados = False # Un interruptor para saber si encontramos al menos a una persona
+    
     # Empieza a revisar todos los registros de inscripciones
     for datos in inscripciones.values():
-        # Si el registro pertenece a la clase que estamos buscando...
-        if datos["id_clase"] == str_id_clase:
-            m_id = datos["id_miembro"] # Saca el código del alumno (ej: "miembro_2")
-            # Busca en el archivo del gimnasio cómo se llama ese código real. Si no aparece, lo bautiza "desconocido"
-            nombre_m = gimnasio_dict[m_id]["nombre"] if m_id in gimnasio_dict else "desconocido"
+        val_json = str(datos["id_clase"]).strip().lower()
+        
+        # Validamos contra ambos formatos posibles para no fallar nunca
+        if val_json == str_id_clase or val_json == id_puro:
+            m_id = datos["id_miembro"] # Saca el código del alumno (ej: "miembro_1" o "1")
+            m_id_puro = m_id.replace("miembro_", "") # Saca el número limpio por si acaso
+            
+            # Busca en el archivo del gimnasio cómo se llama ese código real probando todas las llaves posibles
+            nombre_m = "Desconocido"
+            if m_id in gimnasio_dict:
+                nombre_m = gimnasio_dict[m_id]["nombre"]
+            elif m_id_puro in gimnasio_dict:
+                nombre_m = gimnasio_dict[m_id_puro]["nombre"]
+                
             # Muestra el nombre en la pantalla con un puntito de lista
-            console.print(f" -{m_id}: [bold]{nombre_m}[/bold]")
+            console.print(f"  - {m_id}: [bold]{nombre_m}[/bold]")
             encontrados = True # Enciende el interruptor porque sí encontramos a alguien
 
     # Si al final de revisar todo, el interruptor siguió apagado, avisa que el salón está vacío
     if not encontrados:
-        console.print("[yellow] No hay miembros en esta clase. [/yellow]")
+        console.print("[yellow] ⚠ No hay miembros registrados o inscritos en esta clase. [/yellow]")
+        
+    # 🚨 PAUSA CRÍTICA: Detiene la pantalla para que el console.clear() de main.py no borre el resultado
+    console.input("\n[bold white]Presione [Enter] para volver al menú de inscripciones...[/bold white]")
+
 
 def mostrar_clases_miembro(clases_dict, id_miembro_num):
     # Abre el archivo de inscripciones del computador
     inscripciones = cargar_datos(Ruta_Json)
-    # Convierte el número del alumno en su código completo (ej: de 2 pasa a "miembro_2")
-    str_id_miembro = f"miembro_{id_miembro_num}"
-    console.print(f"\n[bold cyan] Clases asignadas {str_id_miembro.upper()}:[/bold cyan]")
+    
+    # Preparamos los dos formatos posibles en los que pudo haberse guardado ("1" o "miembro_1")
+    id_puro = str(id_miembro_num).strip()
+    str_id_miembro = f"miembro_{id_puro}".lower()
+    
+    console.print(f"\n[bold cyan] Clases asignadas al MIEMBRO {id_puro}:[/bold cyan]")
     
     encontrados = False # Otro interruptor para saber si la persona tiene clases o no
+    
     # Revisa cada una de las inscripciones del gimnasio
     for datos in inscripciones.values():
+        val_json = str(datos["id_miembro"]).strip().lower()
+        
         # Si la inscripción le pertenece al alumno que estamos consultando...
-        if datos["id_miembro"] == str_id_miembro:
-            c_id = datos["id_clase"] # Saca el código de la clase (ej: "clase_3")
+        if val_json == str_id_miembro or val_json == id_puro:
+            c_id = datos["id_clase"] # Saca el código de la clase (ej: "clase_1" o "1")
+            c_id_puro = c_id.replace("clase_", "")
             
-            # Va a los papeles de clases y saca la información de esa clase. Si no hay nada, crea un bloque vacío
-            info_c = clases_dict.get(c_id, {})
-            # Extrae el nombre real del texto (ej: "yoga"). Si no lo encuentra, lo llama "Desconocida"
+            # Va a los papeles de clases y saca la información de esa clase.
+            info_c = {}
+            if c_id in clases_dict:
+                info_c = clases_dict[c_id]
+            elif c_id_puro in clases_dict:
+                info_c = clases_dict[c_id_puro]
+                
+            # Extrae el nombre real de la clase
             nombre_c = info_c.get("nombre_clase", "Desconocida")
             
             # Pinta en la pantalla el código y el nombre de la actividad
@@ -255,5 +316,7 @@ def mostrar_clases_miembro(clases_dict, id_miembro_num):
             
     # Si terminó la lista y el alumno no tenía nada registrado, muestra este mensaje amarillo
     if not encontrados:
-        console.print("[yellow]  Este miembro no tiene clases asignadas.[/yellow]")
-
+        console.print("[yellow] ⚠ Este miembro no tiene clases asignadas.[/yellow]")
+        
+    # 🚨 PAUSA CRÍTICA: Detiene la pantalla para que el console.clear() de main.py no borre el resultado
+    console.input("\n[bold white]Presione [Enter] para volver al menú de inscripciones...[/bold white]")

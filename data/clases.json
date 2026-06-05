@@ -3,7 +3,8 @@
         "nombre_clase": "box2",
         "instructor": "steven",
         "horario": "noche",
-        "cupo_maximo": 10
+        "cupo_maximo": 10,
+        "cupos_disponibles": 9
     },
     "5": {
         "nombre_clase": "box3",

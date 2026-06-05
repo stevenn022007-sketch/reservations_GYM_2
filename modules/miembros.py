@@ -14,6 +14,7 @@ Ruta_Json = "data/miembros.json"
 #el menú llama a las funciones que están debajo de él, y Python lee el archivo de arriba hacia abajo
 def menu_miembros():
     while True:
+        console.clear()
         menu_texto = (
             "[bold cyan]── 🏋️ GESTIÓN DE MIEMBROS 🏋️ ──[/bold cyan]\n\n"
             "[bold green]1.[/bold green] 👀 Ver Miembros\n"
@@ -60,6 +61,7 @@ def menu_miembros():
 # -------VER MIEMBROS-----------------
 # que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
 def ver_miembros(gimnasio=None):
+    console.clear()
     # Cargamos los datos reales del JSON directamente
     gimnasio = cargar_datos(Ruta_Json)
     console.print("\n[bold cyan]👀 LISTA DE MIEMBROS[/bold cyan]")
@@ -84,9 +86,10 @@ def ver_miembros(gimnasio=None):
             datos["nombre"],
             datos["tipo_suscripcion"]
         )
-        guardar_datos(Ruta_Json, gimnasio)
 
-        console.print(tabla)
+    console.print(tabla)
+    console.print("\n")
+    console.input("[bold white]Presione [Enter] para volver al menú de miembros...[/bold white]")
  #-----------STEFYY- CREAR MIEMBRO----------------
 
 #escribimos el mismo diccionario que esta en main para trabajar sobre los mismos datos
@@ -164,7 +167,7 @@ def actualizar_miembro (gimnasio: dict):
         console.print("  Las Opciones para actualizar son:")
         console.print("  [bold]1.[/bold] Mensual")
         console.print("  [bold]2.[/bold] Anual")
-        entrada_plan = int(console.input("[green]Elige (1 o 2) para actualizar, de lo contrario presiona ENTER: [/green]"))
+        entrada_plan = console.input("[green]Elige (1 o 2) para actualizar, de lo contrario presiona ENTER: [/green]")
 
         if entrada_plan != "":
             try:
@@ -180,6 +183,7 @@ def actualizar_miembro (gimnasio: dict):
                 return
 
         # ------------Vinculo con json-------
-                guardar_datos(Ruta_Json, gimnasio)
+        guardar_datos(Ruta_Json, gimnasio)
+        console.print("[bold green]✨ ¡Miembro actualizado con éxito! ✨[/bold green]\n")
     else:
-        print(f"❌❌❌El miembro con ese id {str_id_miembro} no existe❌❌❌")
+        console.print(f"❌❌❌El miembro con ese id {str_id_miembro} no existe❌❌❌")

@@ -26,6 +26,7 @@ def mostrar_menu():
 
 def main():
     while True:
+        console.clear()
         mostrar_menu()
         
         # console.input captura la opción limpia de espacios
