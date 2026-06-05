@@ -39,7 +39,7 @@ def main():
         elif opcion == "2":
             console.print("[green]🔄 Cargando módulo de clases...[/green]")
             # Llamada al submenú interactivo de clases.py
-            clases.menu_clases()
+            clases.menu_principal()
             
         elif opcion == "3":
             console.print("[green]🔄 Cargando módulo de inscripciones...[/green]")
