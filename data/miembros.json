@@ -1,6 +1,14 @@
 {
-    "miembro_2": {
-        "nombre": "sebastian",
+    "1": {
+        "nombre": "steven",
+        "tipo_suscripcion": "Anual"
+    },
+    "2": {
+        "nombre": "perez",
+        "tipo_suscripcion": "Anual"
+    },
+    "3": {
+        "nombre": "andres",
         "tipo_suscripcion": "Anual"
     }
 }
