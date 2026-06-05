@@ -257,14 +257,3 @@ def mostrar_clases_miembro(clases_dict, id_miembro_num):
     if not encontrados:
         console.print("[yellow]  Este miembro no tiene clases asignadas.[/yellow]")
 
-# =====================================================================
-#  BLOQUE DE EJECUCIÓN DIRECTA (Para pruebas sin pasar por main.py)
-# =====================================================================
-# Esta línea le dice a Python: "Si el usuario le da Play DIRECTAMENTE a este archivo inscripciones.py..."
-if __name__ == "__main__":
-    try:
-        # Arranca de inmediato el menú de inscripciones para poder hacer pruebas rápidas
-        menu_inscripciones()
-    except KeyboardInterrupt:
-        # Si el usuario presiona las teclas de emergencia para apagar la consola (Ctrl + C), frena la caída y se despide bonito
-        console.print("\n[bold red]👋 Ejecución interrumpida.[/bold red]\n")

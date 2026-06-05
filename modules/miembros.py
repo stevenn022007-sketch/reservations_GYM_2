@@ -1,6 +1,7 @@
 # --------------CRUD--------MIEMBROS-----------------
 from rich.console import Console
 from rich.table import Table
+from rich.panel import Panel
 from modules.data import cargar_datos, guardar_datos 
 # Qué necesita un miembro? -> id, nombre, tipo de suscripción
 # console = Console()  # Inicializamos la consola de Rich para usarla en este módulo
@@ -8,6 +9,54 @@ from modules.data import cargar_datos, guardar_datos
 # En este código, se utiliza para imprimir mensajes estilizados y para manejar la entrada del usuario de manera más atractiva.
 console = Console()
 Ruta_Json = "data/miembros.json"
+
+# -------MENU MIEMBROS-----------------
+#el menú llama a las funciones que están debajo de él, y Python lee el archivo de arriba hacia abajo
+def menu_miembros():
+    while True:
+        menu_texto = (
+            "[bold cyan]── 🏋️ GESTIÓN DE MIEMBROS 🏋️ ──[/bold cyan]\n\n"
+            "[bold green]1.[/bold green] 👀 Ver Miembros\n"
+            "[bold green]2.[/bold green] ➕ Crear Miembro\n"
+            "[bold green]3.[/bold green] ❌ Eliminar Miembro\n"
+            "[bold green]4.[/bold green] 📝 Editar Miembro\n\n"
+            "[bold red]5.[/bold red] 🔙 Volver al Menú Principal"
+        )
+        '''Envuelve el texto en un recuadro visual. title es el texto que aparece arriba del recuadro, border_style es el color del borde y expand=False hace que el recuadro solo ocupe el ancho necesario en lugar de toda la pantalla.'''
+        menu_panel = Panel(
+            menu_texto,
+            title="[bold yellow]👥 Miembros[/bold yellow]",
+            border_style="cyan",
+            expand=False
+        )
+        console.print(menu_panel)
+        '''Captura el error cuando el usuario escribe letras en lugar de números. Sin esto el programa crashearía(significa que se detiene abruptamente y deja de funcionar debido a un error).'''
+        try:
+            opcion = int(console.input("\n[bold orange1]👉 Ingrese la opción (1 a 5): [/bold orange1]"))
+        except ValueError:
+            console.print("\n[bold red]⚠ Error: Por favor, introduce solo números.[/bold red]")
+            continue
+        #Evalúa qué número eligió el usuario y llama la función correspondiente.
+        match opcion:
+            case 1:
+                miembros = cargar_datos(Ruta_Json)
+                ver_miembros(miembros)
+            case 2:
+                miembros = cargar_datos(Ruta_Json)
+                crear_miembro(miembros)
+            case 3:
+                miembros = cargar_datos(Ruta_Json)
+                eliminar_miembro(miembros)
+            case 4:
+                miembros = cargar_datos(Ruta_Json)
+                actualizar_miembro(miembros)
+            case 5:
+                console.print("\n[bold cyan]🔙 Volviendo al menú principal...[/bold cyan]\n")
+                break
+            case _:
+                console.print("\n[bold red]❌ Opción inválida. Intenta de nuevo.[/bold red]")
+
+
 # -------VER MIEMBROS-----------------
 # que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
 def ver_miembros(gimnasio=None):
@@ -35,6 +84,8 @@ def ver_miembros(gimnasio=None):
             datos["nombre"],
             datos["tipo_suscripcion"]
         )
+        guardar_datos(Ruta_Json, gimnasio)
+
         console.print(tabla)
  #-----------STEFYY- CREAR MIEMBRO----------------
 
@@ -79,15 +130,14 @@ def crear_miembro(gimnasio):
 
 def eliminar_miembro(lista_miembros):
     lista_miembros = cargar_datos(Ruta_Json)
-    eliminar_por_id = input("Ingrese el ID del miembro que deseas eliminar: ").lower()
+    eliminar_por_id = console.input("[green]Ingrese el ID del miembro que deseas eliminar: [/green]").lower()
     
     if eliminar_por_id in lista_miembros:
         lista_miembros.pop(eliminar_por_id)
-        print(f"El ID {eliminar_por_id} fue eliminado exitosamente")
-        
+        guardar_datos(Ruta_Json, lista_miembros)  # ← guardar en JSON
+        console.print(f"[bold green]✅ El ID {eliminar_por_id} fue eliminado exitosamente[/bold green]")
     else:
-        print(f"El ID {eliminar_por_id} no se encuentra en la base de datos")
-
+        console.print(f"[bold red]❌ El ID {eliminar_por_id} no se encuentra en la base de datos[/bold red]")
 
 # -------------------EDITAR MIEMBRO----------------------
 
