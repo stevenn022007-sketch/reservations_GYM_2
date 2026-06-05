@@ -26,6 +26,7 @@ def mostrar_menu():
 
 def main():
     while True:
+        console.clear()
         mostrar_menu()
         
         # console.input captura la opción limpia de espacios
@@ -39,7 +40,7 @@ def main():
         elif opcion == "2":
             console.print("[green]🔄 Cargando módulo de clases...[/green]")
             # Llamada al submenú interactivo de clases.py
-            clases.menu_clases()
+            clases.menu_principal()
             
         elif opcion == "3":
             console.print("[green]🔄 Cargando módulo de inscripciones...[/green]")
