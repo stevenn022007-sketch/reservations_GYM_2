@@ -41,16 +41,16 @@ def menu_miembros():
         match opcion:
             case 1:
                 miembros = cargar_datos(Ruta_Json)
-                ver_miembros()
+                ver_miembros(miembros)
             case 2:
                 miembros = cargar_datos(Ruta_Json)
-                crear_miembro()
+                crear_miembro(miembros)
             case 3:
                 miembros = cargar_datos(Ruta_Json)
                 eliminar_miembro(miembros)
             case 4:
                 miembros = cargar_datos(Ruta_Json)
-                actualizar_miembro()
+                actualizar_miembro(miembros)
             case 5:
                 console.print("\n[bold cyan]🔙 Volviendo al menú principal...[/bold cyan]\n")
                 break
@@ -60,7 +60,7 @@ def menu_miembros():
 
 # -------VER MIEMBROS-----------------
 # que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
-def ver_miembros():
+def ver_miembros(gimnasio=None):
     console.clear()
     # Cargamos los datos reales del JSON directamente
     gimnasio = cargar_datos(Ruta_Json)
@@ -93,7 +93,7 @@ def ver_miembros():
  #-----------STEFYY- CREAR MIEMBRO----------------
 
 #escribimos el mismo diccionario que esta en main para trabajar sobre los mismos datos
-def crear_miembro():
+def crear_miembro(gimnasio):
     miembros = cargar_datos(Ruta_Json)
     console.print("\n[bold cyan]➕ CREAR NUEVO MIEMBRO[/bold cyan]")
 
@@ -131,7 +131,7 @@ def crear_miembro():
 
 #----------------------ELIMINAR MIEMBRO----------------------
 
-def eliminar_miembro():
+def eliminar_miembro(lista_miembros):
     lista_miembros = cargar_datos(Ruta_Json)
     eliminar_por_id = console.input("[green]Ingrese el ID del miembro que deseas eliminar: [/green]").lower()
     
@@ -144,7 +144,7 @@ def eliminar_miembro():
 
 # -------------------EDITAR MIEMBRO----------------------
 
-def actualizar_miembro ():
+def actualizar_miembro (gimnasio: dict):
     gimnasio = cargar_datos(Ruta_Json)
     id_miembro = console.input("[green] id del miembro a editar: [/green]").strip()
     
