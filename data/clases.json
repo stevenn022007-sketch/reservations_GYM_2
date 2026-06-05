@@ -1,20 +1,14 @@
 {
-    "2": {
-        "nombre_clase": "calentamiento",
-        "instructor": "steven",
-        "horario": "tarde",
-        "cupo_maximo": 10
-    },
-    "3": {
-        "nombre_clase": "box",
-        "instructor": "steven",
-        "horario": "tarde",
-        "cupo_maximo": 20
-    },
     "4": {
         "nombre_clase": "box2",
         "instructor": "steven",
         "horario": "noche",
         "cupo_maximo": 10
+    },
+    "5": {
+        "nombre_clase": "box3",
+        "instructor": "paula",
+        "horario": "mañana",
+        "cupo_maximo": 7
     }
 }
