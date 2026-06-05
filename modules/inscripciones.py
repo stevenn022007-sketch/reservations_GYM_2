@@ -1,4 +1,3 @@
-# modules/inscripciones.py
 
 # Traemos la herramienta para pintar la pantalla con textos de colores
 from rich.console import Console
@@ -6,6 +5,8 @@ from rich.console import Console
 from modules.data import cargar_datos, guardar_datos
 # Traemos las reglas del juego final para controlar si hay o no espacio en los salones
 import modules.reto_final as reto_final
+from rich.panel import Panel
+from rich.table import Table
 
 # Activamos el pintor de la pantalla para poder usar colores
 console = Console()
@@ -18,66 +19,109 @@ Ruta_Miembros = "data/miembros.json"
 # =====================================================================
 #  SUBMENÚ EXCLUSIVO DE INSCRIPCIONES
 # =====================================================================
+
 def menu_inscripciones():
     """
-    Este es el control central de la pantalla de inscripciones.
-    Se queda repitiéndose en un círculo infinito hasta que el usuario decida salir.
+    Submenú encargado de gestionar las inscripciones de los miembros
+    a las clases del gimnasio.
+
+    El menú permanece activo dentro de un ciclo infinito hasta que
+    el usuario seleccione la opción 0 para regresar al menú principal.
     """
     while True:
-        # Mostramos el letrero con los títulos y las opciones del menú
-        console.print("\n[bold magenta]=== 📝 GESTIÓN DE INSCRIPCIONES Y CUPOS ===[/bold magenta]")
-        console.print("[bold cyan]1.[/bold cyan] Inscribir Miembro en Clase (Reto Cupos)")
-        console.print("[bold cyan]2.[/bold cyan] Dar de Baja Miembro de Clase")
-        console.print("[bold cyan]3.[/bold cyan] Consultar Miembros por Clase")
-        console.print("[bold cyan]4.[/bold cyan] Consultar Clases de un Miembro")
-        console.print("[bold red]0.[/bold red] Volver al Menú Principal")
-        
-        # Le pedimos al usuario que escriba un número y le borramos los espacios vacíos que deje por error
-        opcion = console.input("\n[bold yellow]Seleccione una opción: [/bold yellow]").strip()
+        # Limpia completamente la consola antes de volver a dibujar el menú.
+        # Esto evita que se acumulen pantallas una debajo de otra.
 
-        # Si el usuario escribe 1, arranca el proceso para meter a alguien a una clase
+        console.clear()
+        
+        # -----------------------------------------------------------------
+        # CREACIÓN DEL TÍTULO
+        # -----------------------------------------------------------------
+
+        # Panel.fit() crea un cuadro cuyo tamaño se ajusta al contenido.
+        # border_style define el color del borde.
+        titulo = Panel.fit(
+            "[bold magenta]📝 GESTIÓN DE INSCRIPCIONES Y CUPOS[/bold magenta]",
+            border_style="magenta"
+        )
+
+        # Muestra el panel en pantalla.
+        console.print(titulo)
+
+        # -----------------------------------------------------------------
+        # CREACIÓN DE LA TABLA DE OPCIONES
+        # -----------------------------------------------------------------
+
+        # Creamos una tabla con encabezados visibles.
+        # header_style define el color y estilo de los encabezados.
+
+        tabla = Table(show_header=True, header_style="bold cyan")
+        
+        # Primera columna:
+        # justify="center" centra el texto.
+        # width=10 establece un ancho fijo.
+        tabla.add_column("Opción", justify="center", width=10)
+
+        # Segunda columna:
+        # Contendrá la descripción de cada acción.
+        tabla.add_column("Descripción", width=50)
+
+        # Agregamos cada fila del menú.
+        tabla.add_row("1", "Inscribir Miembro en Clase")
+        tabla.add_row("2", "Dar de Baja Miembro de Clase")
+        tabla.add_row("3", "Consultar Miembros por Clase")
+        tabla.add_row("4", "Consultar Clases de un Miembro")
+        tabla.add_row("0", "Volver al Menú Principal")
+
+        # Imprime la tabla completa.
+        console.print(tabla)
+
+        # -----------------------------------------------------------------
+        # CAPTURA DE LA OPCIÓN DEL USUARIO
+        # -----------------------------------------------------------------
+
+        # Solicita al usuario que seleccione una opción.
+        # strip() elimina espacios al inicio y final.
+        opcion = console.input(
+            "\n[bold yellow]Seleccione una opción:[/bold yellow] "
+        ).strip()
+
+        # -----------------------------------------------------------------
+        # CONTROL DE OPCIONES
+        # -----------------------------------------------------------------
+
+        # Opción 1:
+        # Llama al proceso encargado de inscribir miembros.
         if opcion == "1":
             flujo_inscripcion()
-        # Si escribe 2, arranca el proceso para sacar a alguien de una clase
+
+        # Opción 2:
+        # Llama al proceso encargado de dar de baja miembros.
         elif opcion == "2":
             flujo_baja()
-        # Si escribe 3, intenta mostrar quiénes están metidos en un salón
-        elif opcion == "3":
-            try:
-                # Pide el número de la clase (por ejemplo: 1)
-                id_c_num = console.input("[green]Ingrese el número de la clase a consultar (ej: 1): [/green]").strip()
-                if not id_c_num.isdigit():
-                    raise ValueError
-                
-                # Abre la lista de personas registradas en el gimnasio
-                base_m = cargar_datos(Ruta_Miembros)
-                # Llama a la función que los dibuja en la pantalla
-                mostrar_miembros_clase(base_m, id_c_num)
-            except ValueError:
-                # Si el usuario escribe letras en vez de un número, muestra este aviso para que no se apague el programa
-                console.print("[red]⚠ Entrada inválida. Ingrese solo el número de ID.[/red]")
-        # Si escribe 4, intenta mostrar a qué clases asiste una persona específica
-        elif opcion == "4":
-            try:
-                # Pide el número de la persona (por ejemplo: 1)
-                id_m_num = console.input("[green]Ingrese el número del miembro a consultar (ej: 1): [/green]").strip()
-                if not id_m_num.isdigit():
-                    raise ValueError
-                
-                # Abre la lista de clases disponibles
-                base_c = cargar_datos(Ruta_Clases)
-                # Llama a la función que las dibuja en la pantalla
-                mostrar_clases_miembro(base_c, id_m_num)
-            except ValueError:
-                # Si escribe letras en vez de números, frena el error y avisa
-                console.print("[red]⚠ Entrada inválida. Ingrese solo el número de ID.[/red]")
-        # Si escribe 0, rompe el círculo infinito de este submenú y regresa al menú de antes
-        elif opcion == "0":
-            break 
-        # Si escribe cualquier otra cosa (un 9, una letra, etc.), avisa que no es una opción válida
-        else:
-            console.print("[red]⚠ Opción inválida en este submenú.[/red]")
 
+        # Opción 3:
+        # Aquí irá la lógica para consultar los miembros
+        # inscritos en una clase específica.
+        elif opcion == "3":
+            pass
+
+        # Opción 4:
+        # Aquí irá la lógica para consultar las clases
+        # a las que pertenece un miembro.        
+        elif opcion == "4":
+            pass
+
+        # Opción 0:
+        # Rompe el ciclo while y regresa al menú principal.
+        elif opcion == "0":
+            break
+        
+        # Si el usuario escribe cualquier otra cosa.
+        else:
+            console.print(          # Muestra un mensaje de error en color rojo.
+                "\n[bold red]⚠ Opción inválida.[/bold red]"
+            )
 # =====================================================================
 #  FLUJOS INTERNOS DE CONTROL
 # =====================================================================
