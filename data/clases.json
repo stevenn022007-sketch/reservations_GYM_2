@@ -1,10 +1,31 @@
 {
+    "1": {
+        "nombre_clase": "box2",
+        "instructor": "steven",
+        "horario": "noche",
+        "cupo_maximo": 10,
+        "cupos_disponibles": 7
+    },
+    "2": {
+        "nombre_clase": "box2",
+        "instructor": "steven",
+        "horario": "noche",
+        "cupo_maximo": 10,
+        "cupos_disponibles": 8
+    },
+    "3": {
+        "nombre_clase": "box2",
+        "instructor": "steven",
+        "horario": "noche",
+        "cupo_maximo": 10,
+        "cupos_disponibles": 8
+    },
     "4": {
         "nombre_clase": "box2",
         "instructor": "steven",
         "horario": "noche",
         "cupo_maximo": 10,
-        "cupos_disponibles": 9
+        "cupos_disponibles": 8
     },
     "5": {
         "nombre_clase": "box3",

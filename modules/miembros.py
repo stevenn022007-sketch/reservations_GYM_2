@@ -116,13 +116,18 @@ def crear_miembro(gimnasio):
 
         # Generar el ID automático contando cuántos miembros hay.
 
-        nuevo_id = f"miembro_{len(miembros) + 1}"
+        if miembros:
+            ids_numericos = [int(id_actual) for id_actual in miembros.keys() if id_actual.isdigit()]
+            nuevo_id = f"{max(ids_numericos) + 1}"
+        else:
+            nuevo_id = "1"
 
         # Guardar el nuevo miembro en el diccionario
-        miembros[nuevo_id] = {
+        dato_miembro = {
             "nombre": nombre,
             "tipo_suscripcion": tipo
         }
+        miembros[nuevo_id] = dato_miembro
         guardar_datos(Ruta_Json, miembros) 
         console.print(f"[bold ]✅ Miembro '{nombre}' creado con ID {nuevo_id}[/bold]\n")
 
