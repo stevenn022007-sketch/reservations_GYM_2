@@ -59,13 +59,14 @@ def menu_miembros():
 
 # -------VER MIEMBROS-----------------
 # que  tiene que hacer esta funcion? -> leer el diccionario de miembros y mostrarlo en una tabla
-def ver_miembros(gimnasio):
-    miembros = cargar_datos(Ruta_Json)
+def ver_miembros(gimnasio=None):
+    # Cargamos los datos reales del JSON directamente
+    gimnasio = cargar_datos(Ruta_Json)
     console.print("\n[bold cyan]👀 LISTA DE MIEMBROS[/bold cyan]")
 
     # Verificar si el diccionario está vacío
-    if len(gimnasio) == 0:
-        console.print("[red]⚠ No hay miembros registrados.[/red]\n")
+    if not gimnasio:
+        console.print("[red]⚠ No hay miembros registrados.[/red]\\n")
         return
 
     # Crear la tabla con rich
@@ -83,8 +84,9 @@ def ver_miembros(gimnasio):
             datos["nombre"],
             datos["tipo_suscripcion"]
         )
-guardar_datos(Ruta_Json, miembros)
+        guardar_datos(Ruta_Json, gimnasio)
 
+        console.print(tabla)
  #-----------STEFYY- CREAR MIEMBRO----------------
 
 #escribimos el mismo diccionario que esta en main para trabajar sobre los mismos datos
@@ -127,8 +129,9 @@ def crear_miembro(gimnasio):
 #----------------------ELIMINAR MIEMBRO----------------------
 
 def eliminar_miembro(lista_miembros):
+    lista_miembros = cargar_datos(Ruta_Json)
     eliminar_por_id = console.input("[green]Ingrese el ID del miembro que deseas eliminar: [/green]").lower()
-
+    
     if eliminar_por_id in lista_miembros:
         lista_miembros.pop(eliminar_por_id)
         guardar_datos(Ruta_Json, lista_miembros)  # ← guardar en JSON
@@ -139,6 +142,7 @@ def eliminar_miembro(lista_miembros):
 # -------------------EDITAR MIEMBRO----------------------
 
 def actualizar_miembro (gimnasio: dict):
+    gimnasio = cargar_datos(Ruta_Json)
     id_miembro = console.input("[green] id del miembro a editar: [/green]").strip()
     
     # nombre_clase = input("Nombre de la clase: ").strip()
@@ -160,19 +164,22 @@ def actualizar_miembro (gimnasio: dict):
         console.print("  Las Opciones para actualizar son:")
         console.print("  [bold]1.[/bold] Mensual")
         console.print("  [bold]2.[/bold] Anual")
-        nuevo_plan = int(console.input("[green]Elige (1 o 2) para actualizar, de lo contrario presiona ENTER: [/green]"))
+        entrada_plan = int(console.input("[green]Elige (1 o 2) para actualizar, de lo contrario presiona ENTER: [/green]"))
 
-        if nuevo_plan != "":
-            if nuevo_plan == 1:
-                tipo = "Mensual"
-            elif nuevo_plan == 2:
-                tipo = "Anual"
-            else:
-                console.print("[red]⚠ Opción inválida.[/red]")
+        if entrada_plan != "":
+            try:
+                    nuevo_plan = int(entrada_plan)
+                    if nuevo_plan == 1:
+                        info["tipo_suscripcion"] = "Mensual"
+                    elif nuevo_plan == 2:
+                        info["tipo_suscripcion"] = "Anual"
+                    else:
+                        console.print("[red]⚠ Opción inválida. No se alteró el plan.[/red]")
+            except ValueError:
+                console.print("[red]⚠ Entrada inválida.[/red]")
                 return
-        info["tipo_suscripcion"] = tipo
 
         # ------------Vinculo con json-------
-        guardar_datos(Ruta_Json, gimnasio)
+                guardar_datos(Ruta_Json, gimnasio)
     else:
         print(f"❌❌❌El miembro con ese id {str_id_miembro} no existe❌❌❌")
