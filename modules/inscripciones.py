@@ -104,14 +104,35 @@ def menu_inscripciones():
         # Aquí irá la lógica para consultar los miembros
         # inscritos en una clase específica.
         elif opcion == "3":
-            pass
+            try:
+                # Pide el número de la clase (por ejemplo: 1)
+                id_c_num = console.input("[green]Ingrese el número de la clase a consultar (ej: 1): [/green]").strip()
+                if not id_c_num.isdigit():
+                    raise ValueError
+                
+                # Abre la lista de personas registradas en el gimnasio
+                base_m = cargar_datos(Ruta_Miembros)
+                # Llama a la función que los dibuja en la pantalla
+                mostrar_miembros_clase(base_m, id_c_num)
+            except ValueError:
+                # Si el usuario escribe letras en vez de un número, muestra este aviso para que no se apague el programa
+                console.print("[red]⚠ Entrada inválida. Ingrese solo el número de ID.[/red]")
 
-        # Opción 4:
-        # Aquí irá la lógica para consultar las clases
-        # a las que pertenece un miembro.        
+        # Si escribe 4, intenta mostrar a qué clases asiste una persona específica
         elif opcion == "4":
-            pass
-
+            try:
+                # Pide el número de la persona (por ejemplo: 1)
+                id_m_num = console.input("[green]Ingrese el número del miembro a consultar (ej: 1): [/green]").strip()
+                if not id_m_num.isdigit():
+                    raise ValueError
+                
+                # Abre la lista de clases disponibles
+                base_c = cargar_datos(Ruta_Clases)
+                # Llama a la función que las dibuja en la pantalla
+                mostrar_clases_miembro(base_c, id_m_num)
+            except ValueError:
+                # Si escribe letras en vez de números, frena el error y avisa
+                console.print("[red]⚠ Entrada inválida. Ingrese solo el número de ID.[/red]")
         # Opción 0:
         # Rompe el ciclo while y regresa al menú principal.
         elif opcion == "0":
